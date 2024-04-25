@@ -11,11 +11,11 @@ public record CreateDataStructureCommand(
 
     public record DataStructure(
         String name,
-        List<Element> dataStructureElements
+        List<DataStructureElement> dataStructureElements
     ) {
     }
 
-    public record Element(
+    public record DataStructureElement(
         String name,
         DataType dataType,
         DataStructure relatedDataStructure
@@ -23,3 +23,4 @@ public record CreateDataStructureCommand(
     }
 
 }
+

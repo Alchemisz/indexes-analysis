@@ -16,12 +16,12 @@ class DataStructureTest {
             new CreateDataStructureCommand.DataStructure(
                 "Person",
                 List.of(
-                    new CreateDataStructureCommand.Element(
+                    new CreateDataStructureCommand.DataStructureElement(
                         "Name",
                         DataType.STRING,
                         null
                     ),
-                    new CreateDataStructureCommand.Element(
+                    new CreateDataStructureCommand.DataStructureElement(
                         "Age",
                         DataType.NUMBER,
                         null
@@ -52,16 +52,16 @@ class DataStructureTest {
         CreateDataStructureCommand.DataStructure addressDataStructure = new CreateDataStructureCommand.DataStructure(
             "Adress",
             List.of(
-                new CreateDataStructureCommand.Element("id", DataType.NUMBER, null),
-                new CreateDataStructureCommand.Element("city", DataType.STRING, null)
+                new CreateDataStructureCommand.DataStructureElement("id", DataType.NUMBER, null),
+                new CreateDataStructureCommand.DataStructureElement("city", DataType.STRING, null)
             )
         );
 
         CreateDataStructureCommand.DataStructure personDataStructure = new CreateDataStructureCommand.DataStructure(
             "Person",
             List.of(
-                new CreateDataStructureCommand.Element("Address_Id", DataType.STRING, addressDataStructure),
-                new CreateDataStructureCommand.Element("Age", DataType.NUMBER, null)
+                new CreateDataStructureCommand.DataStructureElement("Address_Id", DataType.STRING, addressDataStructure),
+                new CreateDataStructureCommand.DataStructureElement("Age", DataType.NUMBER, null)
             )
         );
         var command = new CreateDataStructureCommand(personDataStructure);

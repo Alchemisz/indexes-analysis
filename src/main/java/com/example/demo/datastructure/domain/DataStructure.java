@@ -9,7 +9,7 @@ public record DataStructure(
     List<DataStructureElement> dataStructureElements
 ) {
 
-    static DataStructure create(CreateDataStructureCommand command) {
+    public static DataStructure create(CreateDataStructureCommand command) {
         return create(command.dataStructure());
     }
 
