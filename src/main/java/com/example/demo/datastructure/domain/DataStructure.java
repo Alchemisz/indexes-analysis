@@ -1,5 +1,6 @@
 package com.example.demo.datastructure.domain;
 
+import com.example.demo.datastructure.client.dto.CreateIndexCommandDTO;
 import com.example.demo.datastructure.domain.command.CreateDataStructureCommand;
 
 import java.util.List;
@@ -30,4 +31,11 @@ public record DataStructure(
     }
 
 
+    public void createIndex(CreateIndexCommandDTO commandDTO) {
+        DataStructureElement dataStructureElement = dataStructureElements.stream()
+            .filter(entry -> entry.getName().equals(commandDTO.dataStructureElementName()))
+            .findFirst()
+            .orElseThrow();
+        dataStructureElement.setIndex(new Index(commandDTO.indexName(), commandDTO.indexType()));
+    }
 }

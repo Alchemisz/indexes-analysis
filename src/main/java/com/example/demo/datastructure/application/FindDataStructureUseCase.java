@@ -27,6 +27,7 @@ public class FindDataStructureUseCase {
                     new DataStructureElementDTO(
                         entry.getName(),
                         entry.getDataType(),
+                        entry.getIndex() != null ? new DataStructureDTO.IndexDTO(entry.getIndex().name(), entry.getIndex().indexType()) : null,
                         entry.getRelatedDataStructure() != null
                             ? buildDataStructureDTO(entry.getRelatedDataStructure())
                             : null

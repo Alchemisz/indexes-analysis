@@ -9,14 +9,17 @@ import java.util.Map;
 @Service
 public class DataStructureCache {
 
+    private final ExtractSubStructureService extractSubStructureService;
     private final Map<String, DataStructure> dataStructureByName;
 
-    public DataStructureCache() {
+    public DataStructureCache(ExtractSubStructureService extractSubStructureService) {
+        this.extractSubStructureService = extractSubStructureService;
         this.dataStructureByName = new HashMap<>();
     }
 
     public void save(DataStructure dataStructure) {
-        dataStructureByName.put(dataStructure.name(), dataStructure);
+        var dataStructures = extractSubStructureService.extractDataStructures(dataStructure);
+        dataStructureByName.putAll(dataStructures.dataStructureByName());
     }
 
     public DataStructure findByName(String dataStructureName) {
