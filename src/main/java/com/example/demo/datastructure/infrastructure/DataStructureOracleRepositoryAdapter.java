@@ -2,6 +2,7 @@ package com.example.demo.datastructure.infrastructure;
 
 import com.example.demo.datastructure.domain.DataStructure;
 import com.example.demo.datastructure.domain.DataType;
+import com.example.demo.datastructure.infrastructure.oracle.CreateIndexParameters;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -40,6 +41,24 @@ class DataStructureOracleRepositoryAdapter implements DataStructureOracleReposit
         while (!dataStructuresStack.isEmpty()) {
             dataStructureOracleRepository.execute(dataStructuresStack.pop());
         }
+    }
+
+    @Override
+    public void createIndex(CreateIndexParameters createIndexParameters) {
+        CreateIndexScriptBuilder createIndexScriptBuilder = new CreateIndexScriptBuilder(
+            createIndexParameters.dataStructureName(),
+            createIndexParameters.indexName(),
+            createIndexParameters.dataStructureElementNames()
+        );
+
+        String script = createIndexScriptBuilder.build();
+        dataStructureOracleRepository.execute(script);
+    }
+
+    @Override
+    public void execute(String indexName) {
+        String script = String.format("DROP INDEX %s", indexName);
+        dataStructureOracleRepository.execute(script);
     }
 
     private String buildCreateTableScript(DataStructure current) {

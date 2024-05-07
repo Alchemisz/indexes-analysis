@@ -1,5 +1,7 @@
 package com.example.demo.datastructure.domain;
 
 public enum IndexType {
-    UNIQUE
+    B_TREE,
+    UNIQUE,
+    COMPOSITE
 }

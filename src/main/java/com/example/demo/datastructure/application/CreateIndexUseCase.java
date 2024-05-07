@@ -3,6 +3,8 @@ package com.example.demo.datastructure.application;
 import com.example.demo.datastructure.client.dto.CreateIndexCommandDTO;
 import com.example.demo.datastructure.domain.DataStructure;
 import com.example.demo.datastructure.infrastructure.DataStructureCache;
+import com.example.demo.datastructure.infrastructure.DataStructureOracleRepositoryPort;
+import com.example.demo.datastructure.infrastructure.oracle.CreateIndexParameters;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -11,12 +13,23 @@ import org.springframework.stereotype.Service;
 public class CreateIndexUseCase {
 
     private final DataStructureCache dataStructureCache;
+    private final DataStructureOracleRepositoryPort dataStructureOracleRepositoryPort;
 
     public void createForDataStructure(CreateIndexCommandDTO commandDTO) {
         //TODO zrobić clean code póki się da005
         //TODO zrobić obsługe indeksów dla wielu pól
         DataStructure dataStructure = dataStructureCache.findByName(commandDTO.dataStructureName());
         dataStructure.createIndex(commandDTO);
+        dataStructureCache.save(dataStructure);
+
+        CreateIndexParameters createIndexParameters = new CreateIndexParameters(
+            commandDTO.dataStructureName(),
+            commandDTO.dataStructureElementNames(),
+            commandDTO.indexName(),
+            commandDTO.indexType()
+        );
+
+        dataStructureOracleRepositoryPort.createIndex(createIndexParameters);
     }
 
 }
