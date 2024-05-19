@@ -5,6 +5,7 @@ import com.example.demo.datastructure.domain.DataStructure;
 import com.example.demo.datastructure.domain.command.CreateDataStructureCommand;
 import com.example.demo.datastructure.infrastructure.DataStructureCache;
 import com.example.demo.datastructure.infrastructure.DataStructureOracleRepositoryPort;
+import com.example.demo.datastructure.infrastructure.mongodb.DataStructureMongoDbRepositoryPort;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -16,6 +17,7 @@ public class CreateDataStructureUseCase {
 
     private final DataStructureCache dataStructureCache;
     private final DataStructureOracleRepositoryPort dataStructureOracleRepositoryPort;
+    private final DataStructureMongoDbRepositoryPort dataStructureMongoDbRepositoryPort;
 
     public void create(CreateDataStructureCommandDTO commandDTO) {
         CreateDataStructureCommand command = new CreateDataStructureCommand(
@@ -24,6 +26,7 @@ public class CreateDataStructureUseCase {
         DataStructure dataStructure = DataStructure.create(command); //TODO zrobic command port
         dataStructureCache.save(dataStructure);
         dataStructureOracleRepositoryPort.createDataStructure(dataStructure);
+        dataStructureMongoDbRepositoryPort.createDataStructure(dataStructure);
     }
 
     private static CreateDataStructureCommand.DataStructure buildDataStructure(DataStructureDTO dataStructureDTO) {

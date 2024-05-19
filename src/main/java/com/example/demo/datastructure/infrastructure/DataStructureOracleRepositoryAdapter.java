@@ -56,7 +56,7 @@ class DataStructureOracleRepositoryAdapter implements DataStructureOracleReposit
     }
 
     @Override
-    public void execute(String indexName) {
+    public void removeIndex(String indexName) {
         String script = String.format("DROP INDEX %s", indexName);
         dataStructureOracleRepository.execute(script);
     }

@@ -36,7 +36,7 @@ public class DataStructureController {
         createIndexUseCase.createForDataStructure(command);
     }
 
-    @DeleteMapping("/index")
+    @PostMapping("/index/delete")
     public void deleteIndexForDataStructure(@RequestBody DeleteIndexCommandDTO command) {
         deleteIndexUseCase.delete(command);
     }
