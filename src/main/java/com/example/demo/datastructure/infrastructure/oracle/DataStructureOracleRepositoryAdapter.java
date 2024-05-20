@@ -1,8 +1,8 @@
-package com.example.demo.datastructure.infrastructure;
+package com.example.demo.datastructure.infrastructure.oracle;
 
 import com.example.demo.datastructure.domain.DataStructure;
 import com.example.demo.datastructure.domain.DataType;
-import com.example.demo.datastructure.infrastructure.oracle.CreateIndexParameters;
+import com.example.demo.datastructure.infrastructure.CreateIndexParameters;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -59,6 +59,11 @@ class DataStructureOracleRepositoryAdapter implements DataStructureOracleReposit
     public void removeIndex(String indexName) {
         String script = String.format("DROP INDEX %s", indexName);
         dataStructureOracleRepository.execute(script);
+    }
+
+    @Override
+    public void execute(String query) {
+        dataStructureOracleRepository.execute(query);
     }
 
     private String buildCreateTableScript(DataStructure current) {

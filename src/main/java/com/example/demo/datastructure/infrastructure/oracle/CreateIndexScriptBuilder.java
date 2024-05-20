@@ -1,11 +1,11 @@
-package com.example.demo.datastructure.infrastructure;
+package com.example.demo.datastructure.infrastructure.oracle;
 
 import lombok.RequiredArgsConstructor;
 
 import java.util.Set;
 
 @RequiredArgsConstructor
-public class CreateIndexScriptBuilder {
+class CreateIndexScriptBuilder {
 
     private final String tableName;
     private final String indexName;

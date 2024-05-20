@@ -3,6 +3,7 @@ package com.example.demo.datastructure.infrastructure;
 import com.example.demo.datastructure.domain.DataStructure;
 import com.example.demo.datastructure.domain.DataStructureElement;
 import com.example.demo.datastructure.domain.DataType;
+import com.example.demo.datastructure.infrastructure.oracle.DataStructureOracleRepositoryAdapter;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;

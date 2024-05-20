@@ -26,4 +26,8 @@ class DataStructureMongoDbRepository {
         var indexOps = mongoTemplate.indexOps(collectionName);
         indexOps.dropIndex(indexName);
     }
+
+    public void execute(String jsonCommand) {
+        mongoTemplate.executeCommand(jsonCommand);
+    }
 }

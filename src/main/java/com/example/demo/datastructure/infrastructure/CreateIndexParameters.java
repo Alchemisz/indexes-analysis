@@ -1,4 +1,4 @@
-package com.example.demo.datastructure.infrastructure.oracle;
+package com.example.demo.datastructure.infrastructure;
 
 import com.example.demo.datastructure.domain.IndexType;
 

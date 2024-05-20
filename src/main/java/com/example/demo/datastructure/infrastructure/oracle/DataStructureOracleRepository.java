@@ -1,4 +1,4 @@
-package com.example.demo.datastructure.infrastructure;
+package com.example.demo.datastructure.infrastructure.oracle;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.jdbc.core.JdbcTemplate;

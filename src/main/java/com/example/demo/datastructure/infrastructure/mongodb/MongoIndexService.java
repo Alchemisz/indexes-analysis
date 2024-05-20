@@ -12,7 +12,7 @@ import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
-public class MongoIndexService {
+class MongoIndexService {
 
 
     private final MongoTemplate mongoTemplate;

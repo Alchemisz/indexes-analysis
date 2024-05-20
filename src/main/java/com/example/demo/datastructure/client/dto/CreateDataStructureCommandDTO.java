@@ -6,7 +6,8 @@ import java.util.List;
 
 
 public record CreateDataStructureCommandDTO(
-    DataStructureDTO dataStructure
+    DataStructureDTO dataStructure,
+    boolean createInDatabase
 ) {
 
     public record DataStructureDTO(

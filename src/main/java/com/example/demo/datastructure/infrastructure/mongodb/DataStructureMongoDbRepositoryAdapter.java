@@ -4,7 +4,7 @@ import com.example.demo.datastructure.domain.DataStructure;
 import com.example.demo.datastructure.domain.DataStructureElement;
 import com.example.demo.datastructure.infrastructure.DataStructures;
 import com.example.demo.datastructure.infrastructure.ExtractSubStructureService;
-import com.example.demo.datastructure.infrastructure.oracle.CreateIndexParameters;
+import com.example.demo.datastructure.infrastructure.CreateIndexParameters;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.index.Index;
@@ -56,6 +56,11 @@ class DataStructureMongoDbRepositoryAdapter implements DataStructureMongoDbRepos
         }
 
         mongoDbRepository.removeIndex(collectionName.get(), indexName);
+    }
+
+    @Override
+    public void execute(String query) {
+        mongoDbRepository.execute(query);
     }
 
     private MongoJsonSchema buildJsonSchema(DataStructure dataStructure) {

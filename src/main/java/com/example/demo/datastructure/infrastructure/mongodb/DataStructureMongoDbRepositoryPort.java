@@ -1,7 +1,7 @@
 package com.example.demo.datastructure.infrastructure.mongodb;
 
 import com.example.demo.datastructure.domain.DataStructure;
-import com.example.demo.datastructure.infrastructure.oracle.CreateIndexParameters;
+import com.example.demo.datastructure.infrastructure.CreateIndexParameters;
 
 public interface DataStructureMongoDbRepositoryPort {
     void createDataStructure(DataStructure dataStructure);
@@ -9,4 +9,6 @@ public interface DataStructureMongoDbRepositoryPort {
     void createIndex(CreateIndexParameters createIndexParameters);
 
     void removeIndex(String indexName);
+
+    void execute(String query);
 }

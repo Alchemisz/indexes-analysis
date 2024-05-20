@@ -3,7 +3,7 @@ package com.example.demo.datastructure.application;
 import com.example.demo.datastructure.client.dto.DeleteIndexCommandDTO;
 import com.example.demo.datastructure.domain.DataStructure;
 import com.example.demo.datastructure.infrastructure.DataStructureCache;
-import com.example.demo.datastructure.infrastructure.DataStructureOracleRepositoryPort;
+import com.example.demo.datastructure.infrastructure.oracle.DataStructureOracleRepositoryPort;
 import com.example.demo.datastructure.infrastructure.mongodb.DataStructureMongoDbRepositoryPort;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

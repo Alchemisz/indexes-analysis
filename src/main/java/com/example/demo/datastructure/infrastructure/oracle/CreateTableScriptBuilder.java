@@ -1,14 +1,14 @@
-package com.example.demo.datastructure.infrastructure;
+package com.example.demo.datastructure.infrastructure.oracle;
 
 import java.util.HashSet;
 import java.util.Set;
 
-public class CreateTableScriptBuilder {
+class CreateTableScriptBuilder {
 
     private final String tableName;
     private final Set<String> fields;
 
-    public CreateTableScriptBuilder(String tableName) {
+    CreateTableScriptBuilder(String tableName) {
         this.tableName = tableName;
         this.fields = new HashSet<>();
     }
