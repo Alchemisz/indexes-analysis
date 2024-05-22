@@ -13,4 +13,9 @@ class DataStructureOracleRepository {
     void execute(String script) {
         jdbcTemplate.execute(script);
     }
+
+    void query(String script) {
+//        jdbcTemplate.queryForList(script);
+        jdbcTemplate.query(script, (rs, rowNum) -> null);
+    }
 }

@@ -1,16 +1,17 @@
 package com.example.demo.datastructure.infrastructure.oracle;
 
+import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.Set;
+import java.util.List;
 
 class CreateTableScriptBuilder {
 
     private final String tableName;
-    private final Set<String> fields;
+    private final List<String> fields;
 
     CreateTableScriptBuilder(String tableName) {
         this.tableName = tableName;
-        this.fields = new HashSet<>();
+        this.fields = new ArrayList<>();
     }
 
     CreateTableScriptBuilder addField(String field) {

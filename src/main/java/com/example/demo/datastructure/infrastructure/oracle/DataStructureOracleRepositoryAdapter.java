@@ -1,6 +1,7 @@
 package com.example.demo.datastructure.infrastructure.oracle;
 
 import com.example.demo.datastructure.domain.DataStructure;
+import com.example.demo.datastructure.domain.DataStructureElement;
 import com.example.demo.datastructure.domain.DataType;
 import com.example.demo.datastructure.infrastructure.CreateIndexParameters;
 import lombok.RequiredArgsConstructor;
@@ -62,15 +63,27 @@ class DataStructureOracleRepositoryAdapter implements DataStructureOracleReposit
     }
 
     @Override
-    public void execute(String query) {
-        dataStructureOracleRepository.execute(query);
+    public void executeQuery(String query) {
+        dataStructureOracleRepository.query(query);
     }
 
     private String buildCreateTableScript(DataStructure current) {
         CreateTableScriptBuilder createTableScriptBuilder = new CreateTableScriptBuilder(current.name());
-        current.dataStructureElements().forEach(entry -> createTableScriptBuilder.addField(
-            String.format("%s %s", entry.getName(), entry.getDataType() == DataType.NUMBER ? "NUMBER" : "VARCHAR2(255)")
-        ));
+        current.dataStructureElements().forEach(entry -> createTableScriptBuilder.addField(buildField(entry)));
         return createTableScriptBuilder.build();
+    }
+
+    private static String buildField(DataStructureElement entry) {
+        var dataType = getDataType(entry.getDataType());
+        return String.format("%s %s", entry.getName(), dataType);
+    }
+
+    private static String getDataType(DataType dataType) {
+        return switch (dataType) {
+            case NUMBER -> "NUMBER";
+            case STRING -> "VARCHAR(255)";
+            case BOOLEAN -> "BOOL";
+            default -> throw new IllegalStateException(String.format("Unhandled data type: %s", dataType));
+        };
     }
 }

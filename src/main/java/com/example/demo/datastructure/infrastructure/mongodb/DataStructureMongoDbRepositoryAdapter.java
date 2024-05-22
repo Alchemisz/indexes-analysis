@@ -2,9 +2,9 @@ package com.example.demo.datastructure.infrastructure.mongodb;
 
 import com.example.demo.datastructure.domain.DataStructure;
 import com.example.demo.datastructure.domain.DataStructureElement;
+import com.example.demo.datastructure.infrastructure.CreateIndexParameters;
 import com.example.demo.datastructure.infrastructure.DataStructures;
 import com.example.demo.datastructure.infrastructure.ExtractSubStructureService;
-import com.example.demo.datastructure.infrastructure.CreateIndexParameters;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.index.Index;
@@ -83,6 +83,9 @@ class DataStructureMongoDbRepositoryAdapter implements DataStructureMongoDbRepos
             }
             case STRING -> {
                 return JsonSchemaProperty.string(dataStructureElement.getName());
+            }
+            case BOOLEAN -> {
+                return JsonSchemaProperty.bool(dataStructureElement.getName());
             }
             default ->
                 throw new IllegalStateException(String.format("Unhandled data type %s", dataStructureElement.getDataType()));

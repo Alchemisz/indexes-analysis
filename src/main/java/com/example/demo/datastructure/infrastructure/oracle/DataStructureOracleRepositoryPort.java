@@ -11,5 +11,5 @@ public interface DataStructureOracleRepositoryPort {
 
     void removeIndex(String indexName);
 
-    void execute(String query);
+    void executeQuery(String query);
 }
