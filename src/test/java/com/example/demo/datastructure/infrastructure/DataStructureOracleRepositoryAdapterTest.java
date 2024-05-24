@@ -26,23 +26,23 @@ class DataStructureOracleRepositoryAdapterTest {
             "Person",
             List.of(
                 new DataStructureElement("Address_Id", DataType.STRING,
-                    new DataStructure(
+                    length, new DataStructure(
                         "Address",
                         List.of(
-                            new DataStructureElement("id", DataType.NUMBER, null),
+                            new DataStructureElement("id", DataType.NUMBER, length, null),
                             new DataStructureElement("city_id", DataType.NUMBER,
-                                new DataStructure(
+                                length, new DataStructure(
                                     "City",
                                     List.of(
-                                        new DataStructureElement("id", DataType.NUMBER, null),
-                                        new DataStructureElement("name", DataType.STRING, null)
+                                        new DataStructureElement("id", DataType.NUMBER, length, null),
+                                        new DataStructureElement("name", DataType.STRING, length, null)
                                     )
                                 )
                             )
                         )
                     )
                 ),
-                new DataStructureElement("Age", DataType.NUMBER, null)
+                new DataStructureElement("Age", DataType.NUMBER, length, null)
             )
         );
 

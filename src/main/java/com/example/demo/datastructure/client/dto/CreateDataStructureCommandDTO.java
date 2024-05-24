@@ -19,6 +19,7 @@ public record CreateDataStructureCommandDTO(
     public record DataStructureElementDTO(
         String name,
         DataType dataType,
+        Integer length,
         DataStructureDTO relatedDataStructure
     ) {
     }

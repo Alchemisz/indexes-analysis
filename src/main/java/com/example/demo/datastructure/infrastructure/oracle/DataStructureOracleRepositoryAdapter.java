@@ -2,7 +2,6 @@ package com.example.demo.datastructure.infrastructure.oracle;
 
 import com.example.demo.datastructure.domain.DataStructure;
 import com.example.demo.datastructure.domain.DataStructureElement;
-import com.example.demo.datastructure.domain.DataType;
 import com.example.demo.datastructure.infrastructure.CreateIndexParameters;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -10,6 +9,8 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Stack;
+
+import static java.lang.String.format;
 
 @Service
 @RequiredArgsConstructor
@@ -58,7 +59,7 @@ class DataStructureOracleRepositoryAdapter implements DataStructureOracleReposit
 
     @Override
     public void removeIndex(String indexName) {
-        String script = String.format("DROP INDEX %s", indexName);
+        String script = format("DROP INDEX %s", indexName);
         dataStructureOracleRepository.execute(script);
     }
 
@@ -74,16 +75,16 @@ class DataStructureOracleRepositoryAdapter implements DataStructureOracleReposit
     }
 
     private static String buildField(DataStructureElement entry) {
-        var dataType = getDataType(entry.getDataType());
-        return String.format("%s %s", entry.getName(), dataType);
+        var dataType = getDataType(entry);
+        return format("%s %s", entry.getName(), dataType);
     }
 
-    private static String getDataType(DataType dataType) {
-        return switch (dataType) {
+    private static String getDataType(DataStructureElement dataStructureElement) {
+        return switch (dataStructureElement.getDataType()) {
             case NUMBER -> "NUMBER";
-            case STRING -> "VARCHAR(255)";
-            case BOOLEAN -> "BOOL";
-            default -> throw new IllegalStateException(String.format("Unhandled data type: %s", dataType));
+            case STRING -> format("VARCHAR2(%s)", dataStructureElement.getLength());
+            case BOOLEAN -> "VARCHAR2(5)";
+            default -> throw new IllegalStateException(format("Unhandled data type: %s", dataStructureElement));
         };
     }
 }

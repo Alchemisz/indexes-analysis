@@ -15,6 +15,8 @@ import org.springframework.util.StringUtils;
 
 import java.util.Optional;
 
+import static org.springframework.data.mongodb.core.schema.IdentifiableJsonSchemaProperty.StringJsonSchemaProperty;
+
 @Service
 @RequiredArgsConstructor
 class DataStructureMongoDbRepositoryAdapter implements DataStructureMongoDbRepositoryPort {
@@ -82,7 +84,7 @@ class DataStructureMongoDbRepositoryAdapter implements DataStructureMongoDbRepos
                 return JsonSchemaProperty.number(dataStructureElement.getName());
             }
             case STRING -> {
-                return JsonSchemaProperty.string(dataStructureElement.getName());
+                return buildStringProperty(dataStructureElement);
             }
             case BOOLEAN -> {
                 return JsonSchemaProperty.bool(dataStructureElement.getName());
@@ -90,6 +92,12 @@ class DataStructureMongoDbRepositoryAdapter implements DataStructureMongoDbRepos
             default ->
                 throw new IllegalStateException(String.format("Unhandled data type %s", dataStructureElement.getDataType()));
         }
+    }
+
+    private static StringJsonSchemaProperty buildStringProperty(DataStructureElement dataStructureElement) {
+        StringJsonSchemaProperty stringJsonSchemaProperty = JsonSchemaProperty.string(dataStructureElement.getName());
+        stringJsonSchemaProperty.maxLength(dataStructureElement.getLength());
+        return stringJsonSchemaProperty;
     }
 
     private static String[] extractFieldNames(DataStructure dataStructure) {

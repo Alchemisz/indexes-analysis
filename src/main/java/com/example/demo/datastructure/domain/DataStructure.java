@@ -22,6 +22,7 @@ public record DataStructure(
                     new DataStructureElement(
                         entry.name(),
                         entry.dataType(),
+                        entry.length(),
                         entry.relatedDataStructure() != null
                             ? create(entry.relatedDataStructure())
                             : null

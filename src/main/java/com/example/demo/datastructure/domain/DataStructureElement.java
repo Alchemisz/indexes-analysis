@@ -8,13 +8,15 @@ import lombok.Getter;
 public class DataStructureElement {
     private final String name;
     private final DataType dataType;
+    private final Integer length;
     private Index index;
     private final DataStructure relatedDataStructure;
 
 
-    public DataStructureElement(String name, DataType dataType, DataStructure dataStructure) {
+    public DataStructureElement(String name, DataType dataType, Integer length, DataStructure dataStructure) {
         this.name = name;
         this.dataType = dataType;
+        this.length = length;
         this.index = null;
         this.relatedDataStructure = dataStructure;
     }

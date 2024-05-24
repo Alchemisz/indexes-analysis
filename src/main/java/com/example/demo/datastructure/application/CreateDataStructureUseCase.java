@@ -40,6 +40,7 @@ public class CreateDataStructureUseCase {
                     new CreateDataStructureCommand.DataStructureElement(
                         entry.name(),
                         entry.dataType(),
+                        entry.length(),
                         entry.relatedDataStructure() != null
                             ? buildDataStructure(entry.relatedDataStructure())
                             : null
