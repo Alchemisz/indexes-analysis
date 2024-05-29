@@ -1,6 +1,7 @@
 package com.example.demo.datastructure.infrastructure.mongodb;
 
 import lombok.RequiredArgsConstructor;
+import org.bson.Document;
 import org.springframework.data.mongodb.core.CollectionOptions;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.index.Index;
@@ -28,6 +29,7 @@ class DataStructureMongoDbRepository {
     }
 
     public void execute(String jsonCommand) {
-        mongoTemplate.executeCommand(jsonCommand);
+        Document command = Document.parse(jsonCommand);
+        mongoTemplate.executeCommand(command);
     }
 }
