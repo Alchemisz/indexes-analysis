@@ -32,4 +32,8 @@ public class QueryHistoryRepository {
                 .collect(Collectors.toMap(entry -> entry, entry -> new ArrayList<>()))
         );
     }
+
+    public void deleteByDatabase(Database database) {
+        this.historiesByDatabase.put(database, new ArrayList<>());
+    }
 }

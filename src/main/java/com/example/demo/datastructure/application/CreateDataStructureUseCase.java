@@ -1,11 +1,12 @@
 package com.example.demo.datastructure.application;
 
+import com.example.demo.databaseconfiguration.infrastructure.DatabaseConfigurationRepositoryPort;
 import com.example.demo.datastructure.client.dto.CreateDataStructureCommandDTO;
 import com.example.demo.datastructure.domain.DataStructure;
 import com.example.demo.datastructure.domain.command.CreateDataStructureCommand;
 import com.example.demo.datastructure.infrastructure.DataStructureCache;
-import com.example.demo.datastructure.infrastructure.mongodb.DataStructureMongoDbRepositoryPort;
-import com.example.demo.datastructure.infrastructure.oracle.DataStructureOracleRepositoryPort;
+import com.example.demo.datastructure.infrastructure.mongodb.MongoDbDataStructureRepositoryPort;
+import com.example.demo.datastructure.infrastructure.oracle.OracleDataStructureRepositoryPort;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -16,8 +17,9 @@ import static com.example.demo.datastructure.client.dto.CreateDataStructureComma
 public class CreateDataStructureUseCase {
 
     private final DataStructureCache dataStructureCache;
-    private final DataStructureOracleRepositoryPort dataStructureOracleRepositoryPort;
-    private final DataStructureMongoDbRepositoryPort dataStructureMongoDbRepositoryPort;
+    private final OracleDataStructureRepositoryPort oracleDataStructureRepositoryPort;
+    private final MongoDbDataStructureRepositoryPort mongoDbDataStructureRepositoryPort;
+    private final DatabaseConfigurationRepositoryPort databaseConfigurationRepositoryPort;
 
     public void create(CreateDataStructureCommandDTO commandDTO) {
         CreateDataStructureCommand command = new CreateDataStructureCommand(
@@ -27,8 +29,17 @@ public class CreateDataStructureUseCase {
         dataStructureCache.save(dataStructure);
 
         if (commandDTO.createInDatabase()) {
-            dataStructureOracleRepositoryPort.createDataStructure(dataStructure);
-            dataStructureMongoDbRepositoryPort.createDataStructure(dataStructure);
+            createDataStructureInDatabase(dataStructure);
+        }
+    }
+
+    private void createDataStructureInDatabase(DataStructure dataStructure) {
+        var databaseConfigurationDTO = databaseConfigurationRepositoryPort.find();
+        if (databaseConfigurationDTO.oracleEnabled()) {
+            oracleDataStructureRepositoryPort.createDataStructure(dataStructure);
+        }
+        if (databaseConfigurationDTO.mongoDbEnabled()) {
+            mongoDbDataStructureRepositoryPort.createDataStructure(dataStructure);
         }
     }
 

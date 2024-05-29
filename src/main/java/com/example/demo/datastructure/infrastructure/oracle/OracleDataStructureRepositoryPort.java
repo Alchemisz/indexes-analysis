@@ -1,14 +1,15 @@
-package com.example.demo.datastructure.infrastructure.mongodb;
+package com.example.demo.datastructure.infrastructure.oracle;
 
 import com.example.demo.datastructure.domain.DataStructure;
 import com.example.demo.datastructure.infrastructure.CreateIndexParameters;
 
-public interface DataStructureMongoDbRepositoryPort {
+public interface OracleDataStructureRepositoryPort {
+
     void createDataStructure(DataStructure dataStructure);
 
     void createIndex(CreateIndexParameters createIndexParameters);
 
     void removeIndex(String indexName);
 
-    void execute(String query);
+    void executeQuery(String query);
 }

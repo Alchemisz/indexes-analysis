@@ -1,11 +1,13 @@
 package com.example.demo.datastructure.application;
 
+import com.example.demo.databaseconfiguration.infrastructure.DatabaseConfigurationRepository;
 import com.example.demo.datastructure.client.dto.ExecuteQueryCommandDTO;
 import com.example.demo.datastructure.client.dto.QueryExecutionResult;
 import com.example.demo.datastructure.infrastructure.history.QueryHistory;
 import com.example.demo.datastructure.infrastructure.history.QueryHistoryRepositoryPort;
-import com.example.demo.datastructure.infrastructure.mongodb.DataStructureMongoDbRepositoryPort;
-import com.example.demo.datastructure.infrastructure.oracle.DataStructureOracleRepositoryPort;
+import com.example.demo.datastructure.infrastructure.mongodb.MongoDbDataStructureRepositoryPort;
+import com.example.demo.datastructure.infrastructure.oracle.OracleDataStructureRepositoryPort;
+import com.example.demo.datastructure.shared.Database;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -17,9 +19,10 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class ExecuteQueryUseCase {
 
-    private final DataStructureOracleRepositoryPort dataStructureOracleRepositoryPort;
-    private final DataStructureMongoDbRepositoryPort dataStructureMongoDbRepositoryPort;
+    private final OracleDataStructureRepositoryPort oracleDataStructureRepositoryPort;
+    private final MongoDbDataStructureRepositoryPort mongoDbDataStructureRepositoryPort;
     private final QueryHistoryRepositoryPort queryHistoryRepositoryPort;
+    private final DatabaseConfigurationRepository databaseConfigurationRepositoryPort;
 
     public QueryExecutionResult execute(ExecuteQueryCommandDTO command) {
         long startTime = System.currentTimeMillis();
@@ -50,10 +53,12 @@ public class ExecuteQueryUseCase {
     }
 
     private void executeQuery(ExecuteQueryCommandDTO command) {
-        switch (command.database()) {
-            case ORACLE -> dataStructureOracleRepositoryPort.executeQuery(command.query());
-            case MONGO_DB -> dataStructureMongoDbRepositoryPort.execute(command.query());
-            default -> throw new IllegalStateException(String.format("Unhandled database: %s", command.database()));
+        var databaseConfigurationDTO = databaseConfigurationRepositoryPort.find();
+        if (databaseConfigurationDTO.oracleEnabled() && command.database().equals(Database.ORACLE)) {
+            oracleDataStructureRepositoryPort.executeQuery(command.query());
+        }
+        if (databaseConfigurationDTO.mongoDbEnabled() && command.database().equals(Database.MONGO_DB)) {
+            mongoDbDataStructureRepositoryPort.execute(command.query());
         }
     }
 

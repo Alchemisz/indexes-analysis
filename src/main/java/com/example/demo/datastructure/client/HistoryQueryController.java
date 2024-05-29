@@ -4,10 +4,7 @@ import com.example.demo.datastructure.infrastructure.history.QueryHistory;
 import com.example.demo.datastructure.infrastructure.history.QueryHistoryRepositoryPort;
 import com.example.demo.datastructure.shared.Database;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -19,8 +16,12 @@ public class HistoryQueryController {
     private final QueryHistoryRepositoryPort queryHistoryRepositoryPort;
 
     @GetMapping("/{database}")
-    public List<QueryHistory> executeQuery(@PathVariable Database database) {
+    public List<QueryHistory> findHistory(@PathVariable Database database) {
         return queryHistoryRepositoryPort.getByDatabase(database);
     }
 
+    @DeleteMapping("/{database}")
+    public void deleteHistory(@PathVariable Database database) {
+        queryHistoryRepositoryPort.deleteByDatabase(database);
+    }
 }

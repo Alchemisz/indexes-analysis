@@ -22,4 +22,9 @@ class QueryHistoryRepositoryAdapter implements QueryHistoryRepositoryPort {
         queryHistoryRepository.add(database, queryHistory);
     }
 
+    @Override
+    public void deleteByDatabase(Database database) {
+        queryHistoryRepository.deleteByDatabase(database);
+    }
+
 }

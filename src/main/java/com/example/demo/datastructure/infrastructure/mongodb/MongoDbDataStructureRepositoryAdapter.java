@@ -19,7 +19,7 @@ import static org.springframework.data.mongodb.core.schema.IdentifiableJsonSchem
 
 @Service
 @RequiredArgsConstructor
-class DataStructureMongoDbRepositoryAdapter implements DataStructureMongoDbRepositoryPort {
+class MongoDbDataStructureRepositoryAdapter implements MongoDbDataStructureRepositoryPort {
 
     private final DataStructureMongoDbRepository mongoDbRepository;
     private final ExtractSubStructureService extractSubStructureService;

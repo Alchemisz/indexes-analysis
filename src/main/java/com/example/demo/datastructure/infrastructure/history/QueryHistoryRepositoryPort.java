@@ -8,4 +8,6 @@ public interface QueryHistoryRepositoryPort {
     List<QueryHistory> getByDatabase(Database database);
 
     void add(Database database, QueryHistory queryHistory);
+
+    void deleteByDatabase(Database database);
 }

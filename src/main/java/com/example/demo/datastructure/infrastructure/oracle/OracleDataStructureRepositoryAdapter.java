@@ -14,7 +14,7 @@ import static java.lang.String.format;
 
 @Service
 @RequiredArgsConstructor
-class DataStructureOracleRepositoryAdapter implements DataStructureOracleRepositoryPort {
+class OracleDataStructureRepositoryAdapter implements OracleDataStructureRepositoryPort {
 
     private final DataStructureOracleRepository dataStructureOracleRepository;
 
