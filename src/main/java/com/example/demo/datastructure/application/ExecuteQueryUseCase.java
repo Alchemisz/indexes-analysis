@@ -24,7 +24,7 @@ public class ExecuteQueryUseCase {
     private final QueryHistoryRepositoryPort queryHistoryRepositoryPort;
     private final DatabaseConfigurationRepository databaseConfigurationRepositoryPort;
 
-    public QueryExecutionResult execute(ExecuteQueryCommandDTO command) {
+    public void execute(ExecuteQueryCommandDTO command) {
         long startTime = System.currentTimeMillis();
         log.info(String.format("Start executing query at time: %s", startTime));
 
@@ -34,11 +34,7 @@ public class ExecuteQueryUseCase {
         long duration = endTime - startTime;
         log.info(String.format("Finish executing query at time: %s with duration: %s", endTime, duration));
 
-        QueryExecutionResult queryExecutionResult = calculateExecutionTime(duration);
-
-        addHistory(command, queryExecutionResult);
-
-        return queryExecutionResult;
+        addHistory(command, calculateExecutionTime(duration));
     }
 
     private void addHistory(ExecuteQueryCommandDTO command, QueryExecutionResult queryExecutionResult) {

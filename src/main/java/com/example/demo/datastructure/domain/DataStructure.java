@@ -33,16 +33,16 @@ public record DataStructure(
 
 
     public void createIndex(CreateIndexCommandDTO commandDTO) {
-        DataStructureElement dataStructureElement = dataStructureElements.stream()
-            .filter(entry -> commandDTO.dataStructureElementNames().contains(entry.getName()))
-            .findFirst()
-            .orElseThrow();
-        dataStructureElement.setIndex(new Index(commandDTO.indexName(), commandDTO.indexType()));
+        dataStructureElements.stream()
+            .filter(element -> commandDTO.dataStructureElementNames().contains(element.getName()))
+            .forEach(entry -> entry.setIndex(
+                new Index(commandDTO.indexName(), commandDTO.indexType()))
+            );
     }
 
     public void removeIndex(String indexName) {
         dataStructureElements.stream()
-            .filter(dataStructureElement -> dataStructureElement.getIndex() != null && dataStructureElement.getIndex().name().equals(indexName))
+            .filter(element -> element.getIndex() != null && element.getIndex().name().equals(indexName))
             .forEach(DataStructureElement::removeIndex);
     }
 }

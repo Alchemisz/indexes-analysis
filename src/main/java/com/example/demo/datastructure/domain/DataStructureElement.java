@@ -1,10 +1,14 @@
 package com.example.demo.datastructure.domain;
 
+import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
+import lombok.ToString;
 
 @Getter
 @EqualsAndHashCode
+@AllArgsConstructor
+@ToString
 public class DataStructureElement {
     private final String name;
     private final DataType dataType;

@@ -14,8 +14,8 @@ public class ExecuteQueryController {
     private final ExecuteQueryUseCase executeQueryUseCase;
 
     @PostMapping
-    public QueryExecutionResult executeQuery(@RequestBody ExecuteQueryCommandDTO command) {
-        return executeQueryUseCase.execute(command);
+    public void executeQuery(@RequestBody ExecuteQueryCommandDTO command) {
+        executeQueryUseCase.execute(command);
     }
 
 
