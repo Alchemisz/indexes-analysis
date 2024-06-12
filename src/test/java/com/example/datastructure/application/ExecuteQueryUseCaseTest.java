@@ -6,7 +6,6 @@ import com.example.datastructure.domain.DataType;
 import com.example.datastructure.infrastructure.history.QueryHistory;
 import com.example.datastructure.infrastructure.history.QueryHistoryRepositoryPort;
 import com.example.datastructure.shared.Database;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -25,38 +24,11 @@ class ExecuteQueryUseCaseTest extends AbstractIntegrationTest {
     @Autowired
     private ExecuteQueryUseCase sut;
 
-    @AfterEach
-    void tearDown() {
-
-    }
-
     @Test
     void execute_query_oracle() {
         //given
         enableOracleDatabase();
-
-        createDataStructureUseCase.create(
-            new CreateDataStructureCommandDTO(
-                new CreateDataStructureCommandDTO.DataStructureDTO(
-                    DATA_STRUCTURE_NAME,
-                    List.of(
-                        new CreateDataStructureCommandDTO.DataStructureElementDTO(
-                            "ID",
-                            DataType.NUMBER,
-                            null,
-                            null
-                        ),
-                        new CreateDataStructureCommandDTO.DataStructureElementDTO(
-                            "NAME",
-                            DataType.STRING,
-                            50,
-                            null
-                        )
-                    )
-                ),
-                true
-            )
-        );
+        createDataStructure();
 
         var command = new ExecuteQueryCommandDTO(
             "SELECT * FROM PERSON",
@@ -85,7 +57,32 @@ class ExecuteQueryUseCaseTest extends AbstractIntegrationTest {
     void execute_query_mongo() {
         //given
         enableMongoDbDatabase();
+        createDataStructure();
 
+        var command = new ExecuteQueryCommandDTO(
+            "{count: 'PERSON' }",
+            Database.MONGO_DB
+        );
+
+        //when
+        sut.execute(command);
+
+        //them
+        var histories = queryHistoryRepositoryPort.getByDatabase(Database.MONGO_DB);
+        assertThat(histories)
+            .isNotEmpty();
+        QueryHistory queryHistory = histories.get(0);
+        assertThat(queryHistory.query())
+            .isEqualTo(command.query());
+        assertThat(queryHistory.time())
+            .isNotNull();
+        assertThat(queryHistory.id())
+            .isNotNull();
+
+        dropCollectionMongoDB(DATA_STRUCTURE_NAME);
+    }
+
+    private void createDataStructure() {
         createDataStructureUseCase.create(
             new CreateDataStructureCommandDTO(
                 new CreateDataStructureCommandDTO.DataStructureDTO(
@@ -108,31 +105,6 @@ class ExecuteQueryUseCaseTest extends AbstractIntegrationTest {
                 true
             )
         );
-
-        var command = new ExecuteQueryCommandDTO(
-            "{\n" +
-                "  count: 'PERSON'\n" +
-                " }\n" +
-                "}\n",
-            Database.MONGO_DB
-        );
-
-        //when
-        sut.execute(command);
-
-        //them
-        List<QueryHistory> histories = queryHistoryRepositoryPort.getByDatabase(Database.MONGO_DB);
-        assertThat(histories)
-            .isNotEmpty();
-        QueryHistory queryHistory = histories.get(0);
-        assertThat(queryHistory.query())
-            .isEqualTo(command.query());
-        assertThat(queryHistory.time())
-            .isNotNull();
-        assertThat(queryHistory.id())
-            .isNotNull();
-
-        dropCollectionMongoDb(DATA_STRUCTURE_NAME);
     }
 
 }

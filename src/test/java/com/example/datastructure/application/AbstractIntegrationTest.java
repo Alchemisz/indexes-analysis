@@ -24,7 +24,7 @@ public class AbstractIntegrationTest {
         jdbcTemplate.execute(String.format("DROP TABLE %s", dataStructureName));
     }
 
-    protected void dropCollectionMongoDb(String dataStructureName) {
+    protected void dropCollectionMongoDB(String dataStructureName) {
         mongoTemplate.dropCollection(dataStructureName);
     }
 

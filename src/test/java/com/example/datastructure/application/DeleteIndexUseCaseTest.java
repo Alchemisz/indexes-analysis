@@ -163,6 +163,6 @@ class DeleteIndexUseCaseTest extends AbstractIntegrationTest {
         assertThat(result)
             .isEqualTo(expected);
 
-        dropCollectionMongoDb(DATA_STRUCTURE_NAME);
+        dropCollectionMongoDB(DATA_STRUCTURE_NAME);
     }
 }

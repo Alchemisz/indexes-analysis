@@ -4,30 +4,31 @@ import com.example.TestRandomUtils;
 import com.example.datastructure.client.dto.CreateIndexCommandDTO;
 import com.example.datastructure.client.dto.RemoveIndexCommandDTO;
 import com.example.datastructure.domain.command.CreateDataStructureCommand;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 
-import java.util.List;
 import java.util.Set;
 import java.util.stream.Stream;
 
+import static com.example.datastructure.domain.FakeDataStructureBuilder.fakeDataStructureBuilder;
 import static com.example.datastructure.domain.FakeDataStructureElementBuilder.fakeDataStructureElementBuilder;
+import static com.example.datastructure.domain.command.FakeCreateCommandDataStructureElementBuilder.fakeCreateCommandDataStructureElementBuilder;
+import static com.example.datastructure.domain.command.FakeCreateDataStructureCommandBuilder.fakeCreateDataStructureCommandBuilder;
 import static org.assertj.core.api.Assertions.assertThat;
 
 class DataStructureTest {
 
     private static final Integer DEFAULT_LENGTH = 20;
 
-    private static final DataStructureElement ID = FakeDataStructureElementBuilder.fakeDataStructureElementBuilder()
+    private static final DataStructureElement ID = fakeDataStructureElementBuilder()
         .withName("ID")
         .withDataType(DataType.NUMBER)
         .withIndex(null)
         .withRelatedDataStructure(null)
         .build();
 
-    private static final DataStructureElement NAME = FakeDataStructureElementBuilder.fakeDataStructureElementBuilder()
+    private static final DataStructureElement NAME = fakeDataStructureElementBuilder()
         .withName("NAME")
         .withDataType(DataType.STRING)
         .withLength(50)
@@ -35,7 +36,7 @@ class DataStructureTest {
         .withRelatedDataStructure(null)
         .build();
 
-    private static final DataStructureElement AGE = FakeDataStructureElementBuilder.fakeDataStructureElementBuilder()
+    private static final DataStructureElement AGE = fakeDataStructureElementBuilder()
         .withName("ID")
         .withDataType(DataType.NUMBER)
         .withIndex(null)
@@ -45,87 +46,123 @@ class DataStructureTest {
     private static final String DATA_STRUCTURE_NAME = TestRandomUtils.getRandomString(10);
     private static final String INDEX_NAME = TestRandomUtils.getRandomString(10);
 
-    @Test
-    void success_create_simple_data_structure() {
-        //given
-        var command = new CreateDataStructureCommand(
-            new CreateDataStructureCommand.DataStructure(
-                "Person",
-                List.of(
-                    new CreateDataStructureCommand.DataStructureElement(
-                        "Name",
-                        DataType.STRING,
-                        DEFAULT_LENGTH,
-                        null
-                    ),
-                    new CreateDataStructureCommand.DataStructureElement(
-                        "Age",
-                        DataType.NUMBER,
-                        DEFAULT_LENGTH,
-                        null
-                    )
-                )
-            )
-        );
 
-        var expectedResult = new DataStructure(
-            "Person",
-            List.of(
-                new DataStructureElement("Name", DataType.STRING, DEFAULT_LENGTH, null),
-                new DataStructureElement("Age", DataType.NUMBER, DEFAULT_LENGTH, null)
-            )
-        );
+    @ParameterizedTest(name = "{0}")
+    @MethodSource("successCreateDataStructureParameters")
+    void success_create_data_structure(
+        String useCase,
+        CreateDataStructureCommand command,
+        DataStructure expected
+    ) {
+        //when && then
+        DataStructure result = DataStructure.create(command);
 
-        //when
-        var result = DataStructure.create(command);
-
-        //then
         assertThat(result)
-            .isEqualTo(expectedResult);
+            .isEqualTo(expected);
     }
 
-    @Test
-    void success_create_tree_data_structure() {
-        //given
-        CreateDataStructureCommand.DataStructure addressDataStructure = new CreateDataStructureCommand.DataStructure(
-            "Address",
-            List.of(
-                new CreateDataStructureCommand.DataStructureElement("id", DataType.NUMBER, DEFAULT_LENGTH, null),
-                new CreateDataStructureCommand.DataStructureElement("city", DataType.STRING, DEFAULT_LENGTH, null)
-            )
-        );
-
-        CreateDataStructureCommand.DataStructure personDataStructure = new CreateDataStructureCommand.DataStructure(
-            "Person",
-            List.of(
-                new CreateDataStructureCommand.DataStructureElement("Address_Id", DataType.STRING, DEFAULT_LENGTH, addressDataStructure),
-                new CreateDataStructureCommand.DataStructureElement("Age", DataType.NUMBER, DEFAULT_LENGTH, null)
-            )
-        );
-        var command = new CreateDataStructureCommand(personDataStructure);
-
-        var expectedResult = new DataStructure(
-            "Person",
-            List.of(
-                new DataStructureElement("Address_Id", DataType.STRING,
-                    DEFAULT_LENGTH, new DataStructure(
-                    "Address",
-                    List.of(
-                        new DataStructureElement("id", DataType.NUMBER, DEFAULT_LENGTH, null),
-                        new DataStructureElement("city", DataType.STRING, DEFAULT_LENGTH, null)
-                    )
-                )
+    private static Stream<Arguments> successCreateDataStructureParameters() {
+        return Stream.of(
+            Arguments.of(
+                "Create simple data structure",
+                new CreateDataStructureCommand(
+                    fakeCreateDataStructureCommandBuilder()
+                        .withName("PERSON")
+                        .withDataStructureElements(
+                            fakeCreateCommandDataStructureElementBuilder()
+                                .withName("NAME")
+                                .withDataType(DataType.STRING)
+                                .withLength(DEFAULT_LENGTH)
+                                .withRelatedDataStructure(null)
+                                .build(),
+                            fakeCreateCommandDataStructureElementBuilder()
+                                .withName("AGE")
+                                .withDataType(DataType.NUMBER)
+                                .withLength(null)
+                                .withRelatedDataStructure(null)
+                                .build()
+                        ).build()
                 ),
-                new DataStructureElement("Age", DataType.NUMBER, DEFAULT_LENGTH, null)
+                fakeDataStructureBuilder()
+                    .withName("PERSON")
+                    .withDataStructureElements(
+                        fakeDataStructureElementBuilder()
+                            .withName("NAME")
+                            .withDataType(DataType.STRING)
+                            .withLength(DEFAULT_LENGTH)
+                            .withIndex(null)
+                            .withRelatedDataStructure(null)
+                            .build(),
+                        fakeDataStructureElementBuilder()
+                            .withName("AGE")
+                            .withDataType(DataType.NUMBER)
+                            .withLength(null)
+                            .withIndex(null)
+                            .withRelatedDataStructure(null)
+                            .build()
+                    ).build()
+            ),
+            Arguments.of(
+                "Create tree data structure",
+                new CreateDataStructureCommand(
+                    fakeCreateDataStructureCommandBuilder()
+                        .withName("PERSON")
+                        .withDataStructureElements(
+                            fakeCreateCommandDataStructureElementBuilder()
+                                .withName("NAME")
+                                .withDataType(DataType.STRING)
+                                .withLength(DEFAULT_LENGTH)
+                                .withRelatedDataStructure(null)
+                                .build(),
+                            fakeCreateCommandDataStructureElementBuilder()
+                                .withName("ADDRESS_ID")
+                                .withDataType(DataType.NUMBER)
+                                .withLength(null)
+                                .withRelatedDataStructure(
+                                    fakeCreateDataStructureCommandBuilder()
+                                        .withName("ADDRESS")
+                                        .withDataStructureElements(
+                                            fakeCreateCommandDataStructureElementBuilder()
+                                                .withName("ID")
+                                                .withDataType(DataType.NUMBER)
+                                                .withLength(null)
+                                                .withRelatedDataStructure(null)
+                                                .build()
+                                        ).build()
+                                ).build()
+                        ).build()
+                ),
+                fakeDataStructureBuilder()
+                    .withName("PERSON")
+                    .withDataStructureElements(
+                        fakeDataStructureElementBuilder()
+                            .withName("NAME")
+                            .withDataType(DataType.STRING)
+                            .withLength(DEFAULT_LENGTH)
+                            .withIndex(null)
+                            .withRelatedDataStructure(null)
+                            .build(),
+                        fakeDataStructureElementBuilder()
+                            .withName("ADDRESS_ID")
+                            .withDataType(DataType.NUMBER)
+                            .withLength(null)
+                            .withIndex(null)
+                            .withRelatedDataStructure(
+                                fakeDataStructureBuilder()
+                                    .withName("ADDRESS")
+                                    .withDataStructureElements(
+                                        fakeDataStructureElementBuilder()
+                                            .withName("ID")
+                                            .withDataType(DataType.NUMBER)
+                                            .withLength(null)
+                                            .withRelatedDataStructure(null)
+                                            .build()
+                                    ).build()
+                            )
+                            .build()
+                    ).build()
             )
         );
-
-        //when
-        var result = DataStructure.create(command);
-
-        //then
-        assertThat(result)
-            .isEqualTo(expectedResult);
     }
 
     @ParameterizedTest(name = "{0}")
@@ -147,7 +184,7 @@ class DataStructureTest {
         return Stream.of(
             Arguments.of(
                 "Add index on single field",
-                FakeDataStructureBuilder.fakeDataStructureBuilder()
+                fakeDataStructureBuilder()
                     .withName(DATA_STRUCTURE_NAME)
                     .withDataStructureElements(ID, NAME, AGE)
                     .build(),
@@ -159,10 +196,10 @@ class DataStructureTest {
                     INDEX_NAME,
                     IndexType.SINGLE
                 ),
-                FakeDataStructureBuilder.fakeDataStructureBuilder()
+                fakeDataStructureBuilder()
                     .withName(DATA_STRUCTURE_NAME)
                     .withDataStructureElements(
-                        FakeDataStructureElementBuilder.fakeDataStructureElementBuilder(ID)
+                        fakeDataStructureElementBuilder(ID)
                             .withIndex(new Index(INDEX_NAME, IndexType.SINGLE))
                             .build(),
                         NAME,
@@ -172,7 +209,7 @@ class DataStructureTest {
             ),
             Arguments.of(
                 "Add index on multiple fields",
-                FakeDataStructureBuilder.fakeDataStructureBuilder()
+                fakeDataStructureBuilder()
                     .withName(DATA_STRUCTURE_NAME)
                     .withDataStructureElements(ID, NAME, AGE)
                     .build(),
@@ -185,13 +222,13 @@ class DataStructureTest {
                     INDEX_NAME,
                     IndexType.COMPOSITE
                 ),
-                FakeDataStructureBuilder.fakeDataStructureBuilder()
+                fakeDataStructureBuilder()
                     .withName(DATA_STRUCTURE_NAME)
                     .withDataStructureElements(
-                        FakeDataStructureElementBuilder.fakeDataStructureElementBuilder(ID)
+                        fakeDataStructureElementBuilder(ID)
                             .withIndex(new Index(INDEX_NAME, IndexType.COMPOSITE))
                             .build(),
-                        FakeDataStructureElementBuilder.fakeDataStructureElementBuilder(NAME)
+                        fakeDataStructureElementBuilder(NAME)
                             .withIndex(new Index(INDEX_NAME, IndexType.COMPOSITE))
                             .build(),
                         AGE
@@ -219,20 +256,20 @@ class DataStructureTest {
         return Stream.of(
             Arguments.of(
                 "Remove index from single field",
-                FakeDataStructureBuilder.fakeDataStructureBuilder()
+                fakeDataStructureBuilder()
                     .withName(DATA_STRUCTURE_NAME)
                     .withDataStructureElements(
-                        FakeDataStructureElementBuilder.fakeDataStructureElementBuilder(ID)
+                        fakeDataStructureElementBuilder(ID)
                             .withIndex(new Index(INDEX_NAME, IndexType.SINGLE))
                             .build(),
                         NAME,
                         AGE
                     ).build(),
                 new RemoveIndexCommandDTO(INDEX_NAME),
-                FakeDataStructureBuilder.fakeDataStructureBuilder()
+                fakeDataStructureBuilder()
                     .withName(DATA_STRUCTURE_NAME)
                     .withDataStructureElements(
-                        FakeDataStructureElementBuilder.fakeDataStructureElementBuilder(ID)
+                        fakeDataStructureElementBuilder(ID)
                             .withIndex(null)
                             .build(),
                         NAME,
@@ -242,25 +279,25 @@ class DataStructureTest {
             ),
             Arguments.of(
                 "Remove index from multiple fields",
-                FakeDataStructureBuilder.fakeDataStructureBuilder()
+                fakeDataStructureBuilder()
                     .withName(DATA_STRUCTURE_NAME)
                     .withDataStructureElements(
-                        FakeDataStructureElementBuilder.fakeDataStructureElementBuilder(ID)
+                        fakeDataStructureElementBuilder(ID)
                             .withIndex(new Index(INDEX_NAME, IndexType.COMPOSITE))
                             .build(),
-                        FakeDataStructureElementBuilder.fakeDataStructureElementBuilder(NAME)
+                        fakeDataStructureElementBuilder(NAME)
                             .withIndex(new Index(INDEX_NAME, IndexType.COMPOSITE))
                             .build(),
                         AGE
                     ).build(),
                 new RemoveIndexCommandDTO(INDEX_NAME),
-                FakeDataStructureBuilder.fakeDataStructureBuilder()
+                fakeDataStructureBuilder()
                     .withName(DATA_STRUCTURE_NAME)
                     .withDataStructureElements(
-                        FakeDataStructureElementBuilder.fakeDataStructureElementBuilder(ID)
+                        fakeDataStructureElementBuilder(ID)
                             .withIndex(null)
                             .build(),
-                        FakeDataStructureElementBuilder.fakeDataStructureElementBuilder(NAME)
+                        fakeDataStructureElementBuilder(NAME)
                             .withIndex(null)
                             .build(),
                         AGE
