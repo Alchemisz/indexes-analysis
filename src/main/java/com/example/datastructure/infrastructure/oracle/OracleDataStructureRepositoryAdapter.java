@@ -1,8 +1,11 @@
 package com.example.datastructure.infrastructure.oracle;
 
-import com.example.datastructure.infrastructure.CreateIndexParameters;
 import com.example.datastructure.domain.DataStructure;
 import com.example.datastructure.domain.DataStructureElement;
+import com.example.datastructure.infrastructure.CreateIndexParameters;
+import com.example.process.domain.Process;
+import com.example.process.domain.ProcessType;
+import com.example.process.infrastructure.ProcessRepositoryPort;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -17,6 +20,7 @@ import static java.lang.String.format;
 class OracleDataStructureRepositoryAdapter implements OracleDataStructureRepositoryPort {
 
     private final DataStructureOracleRepository dataStructureOracleRepository;
+    private final ProcessRepositoryPort processRepositoryPort;
 
     @Override
     public void createDataStructure(DataStructure dataStructure) {
@@ -50,11 +54,19 @@ class OracleDataStructureRepositoryAdapter implements OracleDataStructureReposit
         CreateIndexScriptBuilder createIndexScriptBuilder = new CreateIndexScriptBuilder(
             createIndexParameters.dataStructureName(),
             createIndexParameters.indexName(),
+            createIndexParameters.indexType(),
             createIndexParameters.dataStructureElementNames()
         );
 
         String script = createIndexScriptBuilder.build();
+
+        Process process = Process.create(ProcessType.INDEX_CREATION, script);
+        processRepositoryPort.save(process);
+
         dataStructureOracleRepository.execute(script);
+
+        process.finish();
+        processRepositoryPort.save(process);
     }
 
     @Override
@@ -65,7 +77,13 @@ class OracleDataStructureRepositoryAdapter implements OracleDataStructureReposit
 
     @Override
     public void executeQuery(String query) {
+        Process process = Process.create(ProcessType.QUERY_EXECUTION, query);
+        processRepositoryPort.save(process);
+
         dataStructureOracleRepository.query(query);
+
+        process.finish();
+        processRepositoryPort.save(process);
     }
 
     private String buildCreateTableScript(DataStructure current) {

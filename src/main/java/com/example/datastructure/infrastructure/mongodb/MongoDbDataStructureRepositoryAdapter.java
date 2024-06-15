@@ -2,9 +2,13 @@ package com.example.datastructure.infrastructure.mongodb;
 
 import com.example.datastructure.domain.DataStructure;
 import com.example.datastructure.domain.DataStructureElement;
+import com.example.datastructure.domain.IndexType;
 import com.example.datastructure.infrastructure.CreateIndexParameters;
 import com.example.datastructure.infrastructure.DataStructures;
 import com.example.datastructure.infrastructure.ExtractSubStructureService;
+import com.example.process.domain.Process;
+import com.example.process.domain.ProcessType;
+import com.example.process.infrastructure.ProcessRepositoryPort;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.index.Index;
@@ -23,6 +27,7 @@ class MongoDbDataStructureRepositoryAdapter implements MongoDbDataStructureRepos
 
     private final DataStructureMongoDbRepository mongoDbRepository;
     private final ExtractSubStructureService extractSubStructureService;
+    private final ProcessRepositoryPort processRepositoryPort;
     private final MongoIndexService mongoIndexService;
 
     @Override
@@ -42,11 +47,18 @@ class MongoDbDataStructureRepositoryAdapter implements MongoDbDataStructureRepos
         if (StringUtils.hasText(createIndexParameters.indexName())) {
             index.named(createIndexParameters.indexName());
         }
-        boolean isUnique = false;
-        if (isUnique) {
+
+        if (createIndexParameters.indexType().equals(IndexType.UNIQUE)) {
             index.unique();
         }
+
+        Process process = Process.create(ProcessType.INDEX_CREATION, String.format("Create index mongoDB: %s", createIndexParameters.indexName()));
+        processRepositoryPort.save(process);
+
         mongoDbRepository.createIndex(createIndexParameters.dataStructureName(), index);
+
+        process.finish();
+        processRepositoryPort.save(process);
     }
 
     @Override
@@ -62,7 +74,18 @@ class MongoDbDataStructureRepositoryAdapter implements MongoDbDataStructureRepos
 
     @Override
     public void execute(String query) {
-        mongoDbRepository.execute(query);
+        Process process = Process.create(ProcessType.QUERY_EXECUTION, query);
+        processRepositoryPort.save(process);
+
+        try {
+            mongoDbRepository.execute(query);
+        }catch (Exception ex){
+            processRepositoryPort.deleteById(process.getId());
+            throw new IllegalStateException(ex);
+        }
+
+        process.finish();
+        processRepositoryPort.save(process);
     }
 
     private MongoJsonSchema buildJsonSchema(DataStructure dataStructure) {
