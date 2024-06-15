@@ -41,4 +41,8 @@ class ProcessRepository {
     public void deleteById(String id) {
         processById.remove(id);
     }
+
+    public void deleteAll() {
+        this.processById = new HashMap<>();
+    }
 }

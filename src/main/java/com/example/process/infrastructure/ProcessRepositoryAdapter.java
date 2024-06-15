@@ -37,4 +37,9 @@ class ProcessRepositoryAdapter implements ProcessRepositoryPort {
         processRepository.deleteById(id);
     }
 
+    @Override
+    public void deleteAll() {
+        processRepository.deleteAll();
+    }
+
 }

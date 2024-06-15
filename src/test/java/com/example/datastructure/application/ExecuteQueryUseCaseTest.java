@@ -6,11 +6,14 @@ import com.example.datastructure.domain.DataType;
 import com.example.datastructure.infrastructure.history.QueryHistory;
 import com.example.datastructure.infrastructure.history.QueryHistoryRepositoryPort;
 import com.example.datastructure.shared.Database;
+import com.example.process.domain.Process;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
 
+import static com.example.process.domain.ProcessStatus.FINISHED;
+import static com.example.process.domain.ProcessType.QUERY_EXECUTION;
 import static org.assertj.core.api.Assertions.assertThat;
 
 class ExecuteQueryUseCaseTest extends AbstractIntegrationTest {
@@ -50,6 +53,13 @@ class ExecuteQueryUseCaseTest extends AbstractIntegrationTest {
         assertThat(queryHistory.id())
             .isNotNull();
 
+        List<Process> processes = processRepositoryPort.findAll();
+        Process process = processes.get(0);
+        assertThat(process.getType())
+            .isEqualTo(QUERY_EXECUTION);
+        assertThat(process.getStatus())
+            .isEqualTo(FINISHED);
+
         dropTableOracle(DATA_STRUCTURE_NAME);
     }
 
@@ -78,6 +88,13 @@ class ExecuteQueryUseCaseTest extends AbstractIntegrationTest {
             .isNotNull();
         assertThat(queryHistory.id())
             .isNotNull();
+
+        List<Process> processes = processRepositoryPort.findAll();
+        Process process = processes.get(0);
+        assertThat(process.getType())
+            .isEqualTo(QUERY_EXECUTION);
+        assertThat(process.getStatus())
+            .isEqualTo(FINISHED);
 
         dropCollectionMongoDB(DATA_STRUCTURE_NAME);
     }

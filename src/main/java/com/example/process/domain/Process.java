@@ -9,8 +9,6 @@ import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Getter
-@ToString
-@EqualsAndHashCode
 @AllArgsConstructor
 public class Process {
     private final String id;

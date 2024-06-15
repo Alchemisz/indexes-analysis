@@ -15,4 +15,6 @@ public interface ProcessRepositoryPort {
     boolean isAnyRunning();
 
     void deleteById(String id);
+
+    void deleteAll();
 }

@@ -18,7 +18,7 @@ class SetupMongoDbConnectionService {
     void setupConnection(SetupConnectionCommand command) {
         MongoClient mongoClient = createClient(command);
         mongoConnection.setMongoClient(mongoClient);
-        mongoConnection.setMongoTemplate(new MongoTemplate(mongoClient, command.getDatabase()));
+        mongoConnection.setMongoTemplate(new MongoTemplate(mongoClient, command.database()));
     }
 
     private MongoClient createClient(SetupConnectionCommand command) {
@@ -31,10 +31,10 @@ class SetupMongoDbConnectionService {
     }
 
     private static ConnectionString prepareConnectionString(SetupConnectionCommand command) {
-        if (!command.getUsername().isEmpty() && !command.getPassword().isEmpty()) {
-            return new ConnectionString("mongodb://" + command.getUsername() + ":" + command.getPort() + "@" + command.getHost() + ":" + command.getPort() + "/" + command.getDatabase());
+        if (!command.username().isEmpty() && !command.password().isEmpty()) {
+            return new ConnectionString("mongodb://" + command.username() + ":" + command.port() + "@" + command.host() + ":" + command.port() + "/" + command.database());
         }
-        return new ConnectionString("mongodb://" + command.getHost() + ":" + command.getPort() + "/" + command.getDatabase());
+        return new ConnectionString("mongodb://" + command.host() + ":" + command.port() + "/" + command.database());
     }
 
 }
