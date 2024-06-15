@@ -5,7 +5,7 @@ import com.example.datastructure.domain.DataStructureElement;
 import com.example.datastructure.domain.IndexType;
 import com.example.datastructure.infrastructure.CreateIndexParameters;
 import com.example.datastructure.infrastructure.DataStructures;
-import com.example.datastructure.infrastructure.ExtractSubStructureService;
+import com.example.datastructure.infrastructure.ExtractStructuresService;
 import com.example.process.domain.Process;
 import com.example.process.domain.ProcessType;
 import com.example.process.infrastructure.ProcessRepositoryPort;
@@ -26,13 +26,13 @@ import static org.springframework.data.mongodb.core.schema.IdentifiableJsonSchem
 class MongoDbDataStructureRepositoryAdapter implements MongoDbDataStructureRepositoryPort {
 
     private final DataStructureMongoDbRepository mongoDbRepository;
-    private final ExtractSubStructureService extractSubStructureService;
+    private final ExtractStructuresService extractStructuresService;
     private final ProcessRepositoryPort processRepositoryPort;
     private final MongoIndexService mongoIndexService;
 
     @Override
     public void createDataStructure(DataStructure dataStructure) {
-        DataStructures dataStructures = extractSubStructureService.extractDataStructures(dataStructure);
+        DataStructures dataStructures = extractStructuresService.extractDataStructures(dataStructure);
         dataStructures.getAllDataStructures().forEach(entry -> {
             var mongoJsonSchema = this.buildJsonSchema(entry);
             mongoDbRepository.createCollection(entry.name(), mongoJsonSchema);

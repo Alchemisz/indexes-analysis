@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Service
-public class ExtractSubStructureService {
+public class ExtractStructuresService {
 
     public DataStructures extractDataStructures(DataStructure dataStructure) {
         List<DataStructure> extractedDataStructures = new ArrayList<>();

@@ -2,6 +2,7 @@ package com.example.datastructure.infrastructure;
 
 import com.example.datastructure.domain.DataStructure;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -19,8 +20,8 @@ public record DataStructures(
         );
     }
 
-    public Collection<DataStructure> getAllDataStructures() {
-        return this.dataStructureByName.values();
+    public List<DataStructure> getAllDataStructures() {
+        return new ArrayList<>(this.dataStructureByName.values());
     }
 
 }

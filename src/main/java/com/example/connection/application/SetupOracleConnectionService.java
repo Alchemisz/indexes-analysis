@@ -17,7 +17,6 @@ class SetupOracleConnectionService {
 
     void setupConnection(SetupConnectionCommand command) {
         DataSource dataSource = createDataSource(command);
-        oracleConnection.setDataSource(dataSource);
         oracleConnection.setJdbcTemplate(new JdbcTemplate(dataSource));
     }
 
