@@ -63,7 +63,12 @@ class OracleDataStructureRepositoryAdapter implements OracleDataStructureReposit
         Process process = Process.create(ProcessType.INDEX_CREATION, script);
         processRepositoryPort.save(process);
 
-        dataStructureOracleRepository.execute(script);
+        try {
+            dataStructureOracleRepository.execute(script);
+        } catch (Exception ex) {
+            processRepositoryPort.deleteById(process.getId());
+            throw new IllegalStateException(ex);
+        }
 
         process.finish();
         processRepositoryPort.save(process);
